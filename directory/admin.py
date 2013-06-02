@@ -20,8 +20,10 @@ class LocationAdmin(admin.ModelAdmin):
 class ResourceAdmin(admin.ModelAdmin):
     fieldsets = (
             (None, {
-                'fields': (('name', 'homepage', 'longterm_status', 
-                    'current_status'))
+                'fields': (('name', 'homepage', 'longterm_status',))
+                }),
+            ('Contacts and Locations', {
+                'fields': (('contacts', 'locations'))
                 }),
             ('Attributes', {
                 'fields': (('transitional_housing',
@@ -45,7 +47,6 @@ class ResourceAdmin(admin.ModelAdmin):
                     'laundry',
                     'mental_health',
                     'dental',
-                    'transitional_housing',
                     'job_attire',
                     'job_training',
                     'career_center',
@@ -54,19 +55,12 @@ class ResourceAdmin(admin.ModelAdmin):
                     'wheelchair_repair',
                     'mail_pickup',
                     'computer_center'))
-                })
+                }),
+            )
     
-    inlines = [
-            ContactInline,
-            LocationInline,
-            ]
     list_display = ('__unicode__',
         'homepage',
         'longterm_status',
-        'current_status',
-        'tags',
-        'locations',
-        'contacts',
         'transitional_housing',
         'affordable_housing',
         'drop_in',
@@ -97,13 +91,8 @@ class ResourceAdmin(admin.ModelAdmin):
         'wheelchair_repair',
         'mail_pickup',
         'computer_center') 
-    list_editable = ('__unicode__',
-        'homepage',
+    list_editable = ('homepage',
         'longterm_status',
-        'current_status',
-        'tags',
-        'locations',
-        'contacts',
         'transitional_housing',
         'affordable_housing',
         'drop_in',

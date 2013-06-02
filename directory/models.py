@@ -8,8 +8,14 @@ class LongtermStatus(models.Model):
                               ('C','Closed'))
     LONGTERM_STATUS_DICT = { 'O' : 'Open',
                             'C' : 'Closed' }
-    status = models.CharField(max_length=1, choices=CURRENT_STATUS_CHOICES)
+    status = models.CharField(max_length=1, choices=LONGTERM_STATUS_CHOICES)
     permanent = models.NullBooleanField(default=True)
+
+    def __unicode__(self):
+        if self.permanent:
+            return self.LONGTERM_STATUS_DICT[self.status]+' (permanent)'
+        else:
+            return self.LONGTERM_STATUS_DICT[self.status]+' (temprorary)'
 
 class CurrentStatus(models.Model):
     # this COULD be a boolean now, but leaving open the possibility of having
@@ -20,14 +26,8 @@ class CurrentStatus(models.Model):
                             'U' : 'No Resources Available' }
     status = models.CharField(max_length=1, choices=CURRENT_STATUS_CHOICES)
 
-class StatusUpdate(models.Model):
-    current_status = models.ForeignKey(CurrentStatus)
-    resource = models.ForeignKey(Resource)
-    timestamp = models.DateTimeField(auto_now=True, auto_now_add=True)
-    # could also include the person/phone who reported the status?
-
     def __unicode__(self):
-        return ' '.join([self.current_status,'('+timesince(self.timestamp)+' ago)'])
+        return self.CURRENT_STATUS_DICT[self.status]
 
 class Tag(models.Model):
     name = models.CharField(max_length=100)
@@ -39,7 +39,7 @@ class Tag(models.Model):
 class Contact(models.Model):
     first_name = models.CharField(max_length=100,blank=True,null=True)
     last_name = models.CharField(max_length=100,blank=True,null=True)
-    phone = models.CharField(blank=True,null=True)
+    phone = models.CharField(max_length=20,blank=True,null=True)
     email = models.EmailField(blank=True,null=True)
     last_updated = models.DateTimeField(auto_now=True, auto_now_add=True,
             blank=True, null=True)
@@ -51,7 +51,7 @@ class Location(models.Model):
     street_one = models.CharField(max_length=50,null=True,blank=True)
     street_two = models.CharField(max_length=50,null=True,blank=True)
     city = models.CharField(max_length=50,null=True,blank=True)
-    state = models.CharFied(max_length=2,null=True,blank=True)
+    state = models.CharField(max_length=2,null=True,blank=True)
     zip_code = models.IntegerField(max_length=5,null=True,blank=True)
     lat = models.FloatField(null=True)
     lon = models.FloatField(null=True)
@@ -63,7 +63,7 @@ class Resource(models.Model):
     homepage = models.URLField()
     longterm_status = models.ForeignKey(LongtermStatus,
             on_delete=models.PROTECT, null=True, blank= True)
-    current_status = models.ForeignKey(CurrentStatus, through='StatusUpdate')
+    current_status = models.ManyToManyField(CurrentStatus, through='StatusUpdate')
     tags = models.ManyToManyField(Tag,null=True,blank=True)
     locations = models.ManyToManyField(Location,null=True,blank=True)
     contacts = models.ManyToManyField(Contact,null=True,blank=True)
@@ -90,7 +90,6 @@ class Resource(models.Model):
     laundry = models.BooleanField()
     mental_health = models.BooleanField()
     dental = models.BooleanField()
-    transitional_housing = models.BooleanField()
     job_attire = models.BooleanField()
     job_training = models.BooleanField()
     career_center = models.BooleanField()
@@ -99,3 +98,16 @@ class Resource(models.Model):
     wheelchair_repair = models.BooleanField()
     mail_pickup = models.BooleanField()
     computer_center = models.BooleanField()
+
+    def __unicode__(self):
+        return self.name
+
+class StatusUpdate(models.Model):
+    current_status = models.ForeignKey(CurrentStatus)
+    resource = models.ForeignKey(Resource)
+    timestamp = models.DateTimeField(auto_now=True, auto_now_add=True)
+    # could also include the person/phone who reported the status?
+
+    def __unicode__(self):
+        return ' '.join([self.current_status,'('+timesince(self.timestamp)+' ago)'])
+
