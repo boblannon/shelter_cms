@@ -67,7 +67,6 @@ class Resource(models.Model):
     tags = models.ManyToManyField(Tag,null=True,blank=True)
     locations = models.ManyToManyField(Location,null=True,blank=True)
     contacts = models.ManyToManyField(Contact,null=True,blank=True)
-    attributes = models.ManyToManyField(Attribute,null=True,blank=True)
 
     #attributes
     transitional_housing = models.BooleanField()
