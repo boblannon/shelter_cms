@@ -1,0 +1,6 @@
+.vagrant
+settings/local.py
+static
+*.swp
+*.pyc
+*.pyo
