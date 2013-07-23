@@ -5,6 +5,7 @@ django-appconf==0.6
 django-compressor==1.1.2
 django-debug-toolbar==0.9.4
 django-devserver==0.3.2
+gdata==2.0.18
 ipython==0.13.2
 psycopg2==2.4.5
 python-dateutil==2.1
