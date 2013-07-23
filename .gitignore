@@ -1,5 +1,5 @@
 .vagrant
-settings/local.py
+sheltr_cms/settings/local_settings.py
 static
 *.swp
 *.pyc
