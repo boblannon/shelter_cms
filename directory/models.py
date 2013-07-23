@@ -45,7 +45,10 @@ class Contact(models.Model):
             blank=True, null=True)
 
     def __unicode__(self):
-        return self.last_name+', '+self.first_name+' ('+self.email+')'
+        last_name = self.last_name or 'last_name'
+        first_name = self.first_name or 'first_name'
+        email = self.email or 'email@example.com'
+        return last_name+', '+first_name+' ('+email+')'
 
 class Location(models.Model):
     street_one = models.CharField(max_length=50,null=True,blank=True)
